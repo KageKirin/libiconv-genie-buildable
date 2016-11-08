@@ -84,7 +84,7 @@ project "iconv.my" -- different name than system one
 	}
 
 	buildoptions {
-		c11_buildoptions,
+		build_for_c11(),
 	}
 
 	linkoptions {
@@ -131,7 +131,7 @@ project "iconv.charset"
 	}
 
 	buildoptions {
-		c11_buildoptions,
+		build_for_c11(),
 	}
 
 	linkoptions {
@@ -174,7 +174,7 @@ project "iconv.charset"
 --	}
 
 --	buildoptions {
---		c11_buildoptions,
+--		build_for_c11(),
 --	}
 ==
 --	linkoptions {
