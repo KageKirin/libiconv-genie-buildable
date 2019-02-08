@@ -21,9 +21,17 @@
 #define _LOCALCHARSET_H
 
 #if 1 && BUILDING_LIBCHARSET
+#ifdef _MSC_VER
+#define LIBCHARSET_DLL_EXPORTED __declspec( dllexport )
+#else
 #define LIBCHARSET_DLL_EXPORTED __attribute__((__visibility__("default")))
+#endif // _MSC_VER
+#else
+#ifdef _MSC_VER
+#define LIBCHARSET_DLL_EXPORTED __declspec( dllimport )
 #else
 #define LIBCHARSET_DLL_EXPORTED
+#endif // _MSC_VER
 #endif
 
 

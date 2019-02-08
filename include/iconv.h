@@ -23,11 +23,20 @@
 
 #define _LIBICONV_VERSION 0x010E    /* version number: (major<<8) + minor */
 
-#if 1 && BUILDING_LIBICONV
+#if 1 && BUILDING_LIBCHARSET
+#ifdef _MSC_VER
+#define LIBICONV_DLL_EXPORTED __declspec( dllexport )
+#else
 #define LIBICONV_DLL_EXPORTED __attribute__((__visibility__("default")))
+#endif // _MSC_VER
+#else
+#ifdef _MSC_VER
+#define LIBICONV_DLL_EXPORTED __declspec( dllimport )
 #else
 #define LIBICONV_DLL_EXPORTED
+#endif // _MSC_VER
 #endif
+
 extern LIBICONV_DLL_EXPORTED  int _libiconv_version; /* Likewise */
 
 /* We would like to #include any system header file which could define
