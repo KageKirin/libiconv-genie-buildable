@@ -44,7 +44,7 @@ top_builddir = .
 
 SOURCES = $(srcdir)/../lib/iconv.c $(srcdir)/../libcharset/lib/localcharset.c $(srcdir)/../lib/relocatable.c
 
-all : 
+all : preloadable_libiconv.so
 
 preloadable_libiconv.so : $(SOURCES)
 	$(RM) -r objects
@@ -58,7 +58,7 @@ preloadable_libiconv.so : $(SOURCES)
 
 install : all force
 	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
-	if test -n ""; then $(INSTALL_DATA)  $(DESTDIR)$(libdir)/.new && mv $(DESTDIR)$(libdir)/.new $(DESTDIR)$(libdir)/ ; fi
+	if test -n "preloadable_libiconv.so"; then $(INSTALL_DATA) preloadable_libiconv.so $(DESTDIR)$(libdir)/preloadable_libiconv.so.new && mv $(DESTDIR)$(libdir)/preloadable_libiconv.so.new $(DESTDIR)$(libdir)/preloadable_libiconv.so ; fi
 
 install-strip : install
 
@@ -66,7 +66,7 @@ installdirs : force
 	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
 
 uninstall : force
-	if test -n ""; then $(RM) $(DESTDIR)$(libdir)/ ; fi
+	if test -n "preloadable_libiconv.so"; then $(RM) $(DESTDIR)$(libdir)/preloadable_libiconv.so ; fi
 
 check : all
 
