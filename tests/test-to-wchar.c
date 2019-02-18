@@ -18,7 +18,7 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include <iconv.h>
+#include "iconv.my.h"
 #include <errno.h>
 
 /* This test checks that the conversion to wchar_t stops correctly when

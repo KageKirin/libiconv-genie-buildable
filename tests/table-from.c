@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <iconv.h>
+#include "iconv.my.h"
 #include <errno.h>
 
 #include "binary-io.h"

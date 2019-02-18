@@ -3,7 +3,7 @@
    This file is put into the public domain.  */
 
 #include "iconv_string.h"
-#include <iconv.h>
+#include "iconv.my.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
