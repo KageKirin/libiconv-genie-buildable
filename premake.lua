@@ -7,61 +7,94 @@
 -- so use the system version if this stops building correctly
 --  
 
-iconv_root = path.join(SCAFFOLDING_THIRDPARTY_DIR, "iconv")
+iconv_script = path.getabsolute(path.getdirectory(_SCRIPT))
+iconv_root = path.join(iconv_script, "iconv")
 
 iconv_includedirs = {
+	path.join(iconv_root, "my"),
 	iconv_root,
 	path.join(iconv_root, "include"),
-	
-	-- macOS system
-	---'/usr/include',
-	
-	-- macOS homebrew (brew install system/dupes/iconv)
-	---'/usr/local/opt/libiconv/include',
-
-	-- Linux
-
-	-- Windows
 }
 
-iconv_libdirs = {
-	-- macOS system
-	---'/usr/lib',
+iconv_libdirs = {}
 
-	-- macOS homebrew	
-	---'/usr/local/opt/libiconv/lib',
-
-	-- Linux
-
-	-- Windows
-}
-
-iconv_links = {
-	-- link with project below to be injected into all projects
-	--- 'iconv.my',
-
-	-- link with system dll/dylib/so to be injected into all projects
-	--- 'iconv'
-}
+iconv_links = {}
 iconv_defines = {}
 
+iconv_defines_internal = {
+	"BUILDING_DLL=0",
+	"ENABLE_RELOCATABLE=0",
+	"HAVE_CONFIG_H",
+	"IN_LIBRARY",
+	"NO_XMALLOC",
+}
+
 ----
-if _OPTIONS["ba-with-thirdparty"] ~= nil then
+
 
 project "iconv.my" -- different name than system one
 	kind "StaticLib"
 	language "C"
 	flags {}
 
-	defines {		
+	defines {
 		"BUILDING_LIBICONV",
-		"BUILDING_DLL=0",
-		"ENABLE_RELOCATABLE=0",
-		"IN_LIBRARY",		
-		"NO_XMALLOC",
-		stringMacroDeclaration("set_relocation_prefix", "libiconv_set_relocation_prefix"),
+		iconv_defines_internal,
 		stringMacroDeclaration("relocate", "libiconv_relocate"),
-		"HAVE_CONFIG_H",
+		stringMacroDeclaration("set_relocation_prefix", "libiconv_set_relocation_prefix"),
+	}
+
+	includedirs {
+		iconv_includedirs,
+		path.join(iconv_root, "src"),
+		path.join(iconv_root, "include"),
+		--path.join(iconv_root, "srclib"),
+	}
+
+	files {
+		path.join(iconv_root, "**.h"),
+		path.join(iconv_root, "lib/**.h"),
+		path.join(iconv_root, "lib/**.c"),
+		path.join(iconv_root, "extras/*.h"),
+		path.join(iconv_root, "extras/*.c"),
+	}
+
+	removefiles {
+		path.join(iconv_root, "lib", "gentranslit.c"),
+		--path.join(iconv_root, "lib", "relocatable.c"),
+		path.join(iconv_root, "lib", "genflags.c"),
+		path.join(iconv_root, "lib", "genaliases2.c"),
+		path.join(iconv_root, "lib", "genaliases.c"),
+	}
+
+	links {
+		'iconv.charset',
+	}
+
+	build_c89()
+
+	local cfgs = configurations()
+	for i, cfg in ipairs(cfgs) do
+		configuration(cfg.terms)
+			defines {
+				stringMacroDeclaration("LIBDIR", cfg.targetdir or ""),
+				stringMacroDeclaration("INSTALLDIR", cfg.targetdir or ""),
+			}
+	end
+
+---
+
+project "iconv.my.noi18n" -- different name than system one
+	kind "StaticLib"
+	language "C"
+	flags {}
+
+	defines {
+		"BUILDING_LIBICONV",
+		"NO_I18N",
+		iconv_defines_internal,
+		stringMacroDeclaration("relocate", "libiconv_relocate"),
+		stringMacroDeclaration("set_relocation_prefix", "libiconv_set_relocation_prefix"),
 	}
 
 	includedirs {
@@ -72,50 +105,37 @@ project "iconv.my" -- different name than system one
 	}
 
 	files {
-		path.join(iconv_root, "include/**.h"),
-		path.join(iconv_root, "lib/**.h"),
-		path.join(iconv_root, "lib/**.c"),		
-		path.join(iconv_root, "extras/*.h"),
-		path.join(iconv_root, "extras/*.c"),		
+		path.join(iconv_root, "**.h"),
+		path.join(iconv_root, "src/**.c"),
 	}
 
 	links {
 		'iconv.charset',
 	}
 
-	buildoptions {
-		build_c11(),
-	}
-
-	linkoptions {
-		c11_linkoptions,
-	}
-
+	build_c89()
 
 	local cfgs = configurations()
 	for i, cfg in ipairs(cfgs) do
 		configuration(cfg.terms)
 			defines {
-				stringMacroDeclaration("LIBDIR", cfg.targetdir),
-				stringMacroDeclaration("INSTALLDIR", cfg.targetdir),
+				stringMacroDeclaration("LIBDIR", cfg.targetdir or ""),
+				stringMacroDeclaration("INSTALLDIR", cfg.targetdir or ""),
 			}
 	end
 
+---
 
 project "iconv.charset"
 	kind "StaticLib"
 	language "C"
 	flags {}
 
-	defines {		
+	defines {
 		"BUILDING_LIBCHARSET",
-		"BUILDING_DLL=0",
-		"ENABLE_RELOCATABLE=0",
-		"IN_LIBRARY",		
-		"NO_XMALLOC",
-		stringMacroDeclaration("set_relocation_prefix", "libcharset_set_relocation_prefix"),
+		iconv_defines_internal,
 		stringMacroDeclaration("relocate", "libcharset_relocate"),
-		"HAVE_CONFIG_H",
+		stringMacroDeclaration("set_relocation_prefix", "libcharset_set_relocation_prefix"),
 	}
 
 	includedirs {
@@ -130,55 +150,14 @@ project "iconv.charset"
 		path.join(iconv_root, "libcharset/lib/*.c"),
 	}
 
-	buildoptions {
-		build_c11(),
-	}
-
-	linkoptions {
-		c11_linkoptions,
-	}
+	build_c89()
 
 	local cfgs = configurations()
 	for i, cfg in ipairs(cfgs) do
 		configuration(cfg.terms)
 			defines {
-				stringMacroDeclaration("LIBDIR", cfg.targetdir),
-				stringMacroDeclaration("INSTALLDIR", cfg.targetdir),
+				stringMacroDeclaration("LIBDIR", cfg.targetdir or ""),
+				stringMacroDeclaration("INSTALLDIR", cfg.targetdir or ""),
 			}
 	end
 
--- not required to build iconv
---project "iconv.gnulib" 
---	kind "StaticLib"
---	language "C"
---	flags {}
-
---	defines {
---		"DEPENDS_ON_LIBICONV=1",
---		"DEPENDS_ON_LIBINTL=1",
---		stringMacroDeclaration("EXEEXT", ""),
---	}
-
---	includedirs {
---		iconv_includedirs,		
---		path.join(iconv_root, "include"),
---		path.join(iconv_root, "lib"),
---		path.join(iconv_root, "srclib"),
---		path.join(iconv_root, "build-aux/snippet"),
---	}
-
---	files {
---		path.join(iconv_root, "build-aux/**.h"),
---		path.join(iconv_root, "srclib/**.h"),		
---		path.join(iconv_root, "srclib/**.c"),		
---	}
-
---	buildoptions {
---		build_c11(),
---	}
-==
---	linkoptions {
---		c11_linkoptions,
---	}
-
-end
