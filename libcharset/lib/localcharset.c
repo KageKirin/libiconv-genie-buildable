@@ -45,7 +45,7 @@
 # endif
 #endif
 
-#if !defined WIN32_NATIVE
+#if !defined WIN32_NATIVE && !defined ANDROID
 # include <unistd.h>
 # if HAVE_LANGINFO_CODESET
 #  include <langinfo.h>
@@ -124,7 +124,7 @@ get_charset_aliases (void)
   cp = charset_aliases;
   if (cp == NULL)
     {
-#if !(defined DARWIN7 || defined VMS || defined WIN32_NATIVE || defined __CYGWIN__)
+#if !(defined DARWIN7 || defined VMS || defined WIN32_NATIVE || defined __CYGWIN__ || defined ANDROID)
       const char *dir;
       const char *base = "charset.alias";
       char *file_name;
@@ -361,7 +361,7 @@ locale_charset (void)
   const char *codeset;
   const char *aliases;
 
-#if !(defined WIN32_NATIVE || defined OS2)
+#if !(defined WIN32_NATIVE || defined OS2 || defined ANDROID)
 
 # if HAVE_LANGINFO_CODESET
 
