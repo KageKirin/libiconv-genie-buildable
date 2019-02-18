@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #if defined __APPLE__ && defined __MACH__ && HAVE_LANGINFO_CODESET
-# define DARWIN7 /* Darwin 7 or newer, i.e. Mac OS X 10.3 or newer */
+# define DARWIN7 /* Darwin 7 or newer, i.e. MacOS X 10.3 or newer */
 #endif
 
 #if defined _WIN32 || defined __WIN32__
@@ -44,7 +44,7 @@
 # endif
 #endif
 
-#if !defined WINDOWS_NATIVE
+#if !defined WINDOWS_NATIVE && !defined ANDROID
 # include <unistd.h>
 # if HAVE_LANGINFO_CODESET
 #  include <langinfo.h>
@@ -128,7 +128,7 @@ get_charset_aliases (void)
   cp = charset_aliases;
   if (cp == NULL)
     {
-#if !(defined DARWIN7 || defined VMS || defined WINDOWS_NATIVE || defined __CYGWIN__ || defined OS2)
+#if !(defined DARWIN7 || defined VMS || defined WINDOWS_NATIVE || defined __CYGWIN__ || defined OS2 || defined ANDROID)
       const char *dir;
       const char *base = "charset.alias";
       char *file_name;
@@ -371,7 +371,7 @@ get_charset_aliases (void)
            "CP1381" "\0" "GB2312" "\0"
            "CP1386" "\0" "GBK" "\0"
            "CP3372" "\0" "EUC-JP" "\0";
-# endif
+#endif
 #endif
 
       charset_aliases = cp;
@@ -395,7 +395,7 @@ locale_charset (void)
   const char *codeset;
   const char *aliases;
 
-#if !(defined WINDOWS_NATIVE || defined OS2)
+#if !(defined WINDOWS_NATIVE || defined OS2 || defined ANDROID)
 
 # if HAVE_LANGINFO_CODESET
 
@@ -513,12 +513,12 @@ locale_charset (void)
     {
       /* The Windows API has a function returning the locale's codepage as a
         number: GetACP().
-        When the output goes to a console window, it needs to be provided in
-        GetOEMCP() encoding if the console is using a raster font, or in
-        GetConsoleOutputCP() encoding if it is using a TrueType font.
-        But in GUI programs and for output sent to files and pipes, GetACP()
-        encoding is the best bet.  */
-      sprintf (buf, "CP%u", GetACP ());
+     When the output goes to a console window, it needs to be provided in
+     GetOEMCP() encoding if the console is using a raster font, or in
+     GetConsoleOutputCP() encoding if it is using a TrueType font.
+     But in GUI programs and for output sent to files and pipes, GetACP()
+     encoding is the best bet.  */
+  sprintf (buf, "CP%u", GetACP ());
     }
   codeset = buf;
 
