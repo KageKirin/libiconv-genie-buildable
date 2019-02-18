@@ -1,7 +1,7 @@
 /* DO NOT EDIT! GENERATED AUTOMATICALLY! */
 /* A GNU-like <signal.h>.
 
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2017 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -56,11 +56,13 @@
 #ifndef _GL_SIGNAL_H
 #define _GL_SIGNAL_H
 
-/* MacOS X 10.3, FreeBSD 6.4, OpenBSD 3.8, OSF/1 4.0, Solaris 2.6 declare
-   pthread_sigmask in <pthread.h>, not in <signal.h>.
+/* Mac OS X 10.3, FreeBSD 6.4, OpenBSD 3.8, OSF/1 4.0, Solaris 2.6, Android
+   declare pthread_sigmask in <pthread.h>, not in <signal.h>.
    But avoid namespace pollution on glibc systems.*/
 #if (0 || defined GNULIB_POSIXCHECK) \
-    && ((defined __APPLE__ && defined __MACH__) || defined __FreeBSD__ || defined __OpenBSD__ || defined __osf__ || defined __sun) \
+    && ((defined __APPLE__ && defined __MACH__) \
+        || defined __FreeBSD__ || defined __OpenBSD__ || defined __osf__ \
+        || defined __sun || defined __ANDROID__) \
     && ! defined __GLIBC__
 # include <pthread.h>
 #endif
@@ -68,6 +70,15 @@
 /* The definitions of _GL_FUNCDECL_RPL etc. are copied here.  */
 #ifndef _GL_CXXDEFS_H
 #define _GL_CXXDEFS_H
+
+/* Begin/end the GNULIB_NAMESPACE namespace.  */
+#if defined __cplusplus && defined GNULIB_NAMESPACE
+# define _GL_BEGIN_NAMESPACE namespace GNULIB_NAMESPACE {
+# define _GL_END_NAMESPACE }
+#else
+# define _GL_BEGIN_NAMESPACE
+# define _GL_END_NAMESPACE
+#endif
 
 /* The three most frequent use cases of these macros are:
 
@@ -163,14 +174,25 @@
    that redirects to rpl_func, if GNULIB_NAMESPACE is defined.
    Example:
      _GL_CXXALIAS_RPL (open, int, (const char *filename, int flags, ...));
- */
+
+   Wrapping rpl_func in an object with an inline conversion operator
+   avoids a reference to rpl_func unless GNULIB_NAMESPACE::func is
+   actually used in the program.  */
 #define _GL_CXXALIAS_RPL(func,rettype,parameters) \
   _GL_CXXALIAS_RPL_1 (func, rpl_##func, rettype, parameters)
 #if defined __cplusplus && defined GNULIB_NAMESPACE
 # define _GL_CXXALIAS_RPL_1(func,rpl_func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                                \
     {                                                         \
-      rettype (*const func) parameters = ::rpl_func;          \
+      static const struct _gl_ ## func ## _wrapper            \
+      {                                                       \
+        typedef rettype (*type) parameters;                   \
+                                                              \
+        inline operator type () const                         \
+        {                                                     \
+          return ::rpl_func;                                  \
+        }                                                     \
+      } func = {};                                            \
     }                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -187,8 +209,15 @@
 # define _GL_CXXALIAS_RPL_CAST_1(func,rpl_func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                                     \
     {                                                              \
-      rettype (*const func) parameters =                           \
-        reinterpret_cast<rettype(*)parameters>(::rpl_func);        \
+      static const struct _gl_ ## func ## _wrapper                 \
+      {                                                            \
+        typedef rettype (*type) parameters;                        \
+                                                                   \
+        inline operator type () const                              \
+        {                                                          \
+          return reinterpret_cast<type>(::rpl_func);               \
+        }                                                          \
+      } func = {};                                                 \
     }                                                              \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -202,19 +231,24 @@
    is defined.
    Example:
      _GL_CXXALIAS_SYS (open, int, (const char *filename, int flags, ...));
- */
+
+   Wrapping func in an object with an inline conversion operator
+   avoids a reference to func unless GNULIB_NAMESPACE::func is
+   actually used in the program.  */
 #if defined __cplusplus && defined GNULIB_NAMESPACE
-  /* If we were to write
-       rettype (*const func) parameters = ::func;
-     like above in _GL_CXXALIAS_RPL_1, the compiler could optimize calls
-     better (remove an indirection through a 'static' pointer variable),
-     but then the _GL_CXXALIASWARN macro below would cause a warning not only
-     for uses of ::func but also for uses of GNULIB_NAMESPACE::func.  */
-# define _GL_CXXALIAS_SYS(func,rettype,parameters) \
-    namespace GNULIB_NAMESPACE                     \
-    {                                              \
-      static rettype (*func) parameters = ::func;  \
-    }                                              \
+# define _GL_CXXALIAS_SYS(func,rettype,parameters)            \
+    namespace GNULIB_NAMESPACE                                \
+    {                                                         \
+      static const struct _gl_ ## func ## _wrapper            \
+      {                                                       \
+        typedef rettype (*type) parameters;                   \
+                                                              \
+        inline operator type () const                         \
+        {                                                     \
+          return ::func;                                      \
+        }                                                     \
+      } func = {};                                            \
+    }                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
 # define _GL_CXXALIAS_SYS(func,rettype,parameters) \
@@ -230,8 +264,15 @@
 # define _GL_CXXALIAS_SYS_CAST(func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                          \
     {                                                   \
-      static rettype (*func) parameters =               \
-        reinterpret_cast<rettype(*)parameters>(::func); \
+      static const struct _gl_ ## func ## _wrapper      \
+      {                                                 \
+        typedef rettype (*type) parameters;             \
+                                                        \
+        inline operator type () const                   \
+        {                                               \
+          return reinterpret_cast<type>(::func);        \
+        }                                               \
+      } func = {};                                      \
     }                                                   \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -254,9 +295,15 @@
 # define _GL_CXXALIAS_SYS_CAST2(func,rettype,parameters,rettype2,parameters2) \
     namespace GNULIB_NAMESPACE                                                \
     {                                                                         \
-      static rettype (*func) parameters =                                     \
-        reinterpret_cast<rettype(*)parameters>(                               \
-          (rettype2(*)parameters2)(::func));                                  \
+      static const struct _gl_ ## func ## _wrapper                            \
+      {                                                                       \
+        typedef rettype (*type) parameters;                                   \
+                                                                              \
+        inline operator type () const                                         \
+        {                                                                     \
+          return reinterpret_cast<type>((rettype2 (*) parameters2)(::func));  \
+        }                                                                     \
+      } func = {};                                                            \
     }                                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -465,7 +512,34 @@ _GL_WARN_ON_USE (pthread_sigmask, "pthread_sigmask is not portable - "
 
 
 #if 1
+# if 0
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef raise
+#   define raise rpl_raise
+#  endif
+_GL_FUNCDECL_RPL (raise, int, (int sig));
+_GL_CXXALIAS_RPL (raise, int, (int sig));
+# else
+#  if !1
+_GL_FUNCDECL_SYS (raise, int, (int sig));
+#  endif
+_GL_CXXALIAS_SYS (raise, int, (int sig));
+# endif
+_GL_CXXALIASWARN (raise);
+#elif defined GNULIB_POSIXCHECK
+# undef raise
+/* Assume raise is always declared.  */
+_GL_WARN_ON_USE (raise, "raise can crash on native Windows - "
+                 "use gnulib module raise for portability");
+#endif
+
+
+#if 1
 # if !1
+
+#  ifndef GNULIB_defined_signal_blocking
+#   define GNULIB_defined_signal_blocking 1
+#  endif
 
 /* Maximum signal number + 1.  */
 #  ifndef NSIG
@@ -480,9 +554,23 @@ typedef int verify_NSIG_constraint[NSIG <= 32 ? 1 : -1];
 
 # endif
 
+/* When also using extern inline, suppress the use of static inline in
+   standard headers of problematic Apple configurations, as Libc at
+   least through Libc-825.26 (2013-04-09) mishandles it; see, e.g.,
+   <http://lists.gnu.org/archive/html/bug-gnulib/2012-12/msg00023.html>.
+   Perhaps Apple will fix this some day.  */
+#if (defined _GL_EXTERN_INLINE_IN_USE && defined __APPLE__ \
+     && (defined __i386__ || defined __x86_64__))
+# undef sigaddset
+# undef sigdelset
+# undef sigemptyset
+# undef sigfillset
+# undef sigismember
+#endif
+
 /* Test whether a given signal is contained in a signal set.  */
 # if 1
-/* This function is defined as a macro on MacOS X.  */
+/* This function is defined as a macro on Mac OS X.  */
 #  if defined __cplusplus && defined GNULIB_NAMESPACE
 #   undef sigismember
 #  endif
@@ -495,7 +583,7 @@ _GL_CXXALIASWARN (sigismember);
 
 /* Initialize a signal set to the empty set.  */
 # if 1
-/* This function is defined as a macro on MacOS X.  */
+/* This function is defined as a macro on Mac OS X.  */
 #  if defined __cplusplus && defined GNULIB_NAMESPACE
 #   undef sigemptyset
 #  endif
@@ -507,7 +595,7 @@ _GL_CXXALIASWARN (sigemptyset);
 
 /* Add a signal to a signal set.  */
 # if 1
-/* This function is defined as a macro on MacOS X.  */
+/* This function is defined as a macro on Mac OS X.  */
 #  if defined __cplusplus && defined GNULIB_NAMESPACE
 #   undef sigaddset
 #  endif
@@ -520,7 +608,7 @@ _GL_CXXALIASWARN (sigaddset);
 
 /* Remove a signal from a signal set.  */
 # if 1
-/* This function is defined as a macro on MacOS X.  */
+/* This function is defined as a macro on Mac OS X.  */
 #  if defined __cplusplus && defined GNULIB_NAMESPACE
 #   undef sigdelset
 #  endif
@@ -533,7 +621,7 @@ _GL_CXXALIASWARN (sigdelset);
 
 /* Fill a signal set with all possible signals.  */
 # if 1
-/* This function is defined as a macro on MacOS X.  */
+/* This function is defined as a macro on Mac OS X.  */
 #  if defined __cplusplus && defined GNULIB_NAMESPACE
 #   undef sigfillset
 #  endif
@@ -592,18 +680,10 @@ _GL_CXXALIAS_SYS (signal, _gl_function_taking_int_returning_void_t,
 # endif
 _GL_CXXALIASWARN (signal);
 
-/* Raise signal SIG.  */
 # if !1 && GNULIB_defined_SIGPIPE
-#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
-#   undef raise
-#   define raise rpl_raise
-#  endif
-_GL_FUNCDECL_RPL (raise, int, (int sig));
-_GL_CXXALIAS_RPL (raise, int, (int sig));
-# else
-_GL_CXXALIAS_SYS (raise, int, (int sig));
+/* Raise signal SIGPIPE.  */
+_GL_EXTERN_C int _gl_raise_SIGPIPE (void);
 # endif
-_GL_CXXALIASWARN (raise);
 
 #elif defined GNULIB_POSIXCHECK
 # undef sigaddset

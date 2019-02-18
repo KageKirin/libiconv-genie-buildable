@@ -1,7 +1,7 @@
 /* DO NOT EDIT! GENERATED AUTOMATICALLY! */
 /* A GNU-like <string.h>.
 
-   Copyright (C) 1995-1996, 2001-2011 Free Software Foundation, Inc.
+   Copyright (C) 1995-1996, 2001-2017 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -14,18 +14,33 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
-
-#ifndef _GL_STRING_H
+   along with this program; if not, see <http://www.gnu.org/licenses/>.  */
 
 #if __GNUC__ >= 3
 #pragma GCC system_header
 #endif
 
 
+#if defined _GL_ALREADY_INCLUDING_STRING_H
+/* Special invocation convention:
+   - On OS X/NetBSD we have a sequence of nested includes
+       <string.h> -> <strings.h> -> "string.h"
+     In this situation system _chk variants due to -D_FORTIFY_SOURCE
+     might be used after any replacements defined here.  */
+
+#include_next <string.h>
+
+#else
+/* Normal invocation convention.  */
+
+#ifndef _GL_STRING_H
+
+#define _GL_ALREADY_INCLUDING_STRING_H
+
 /* The include_next requires a split double-inclusion guard.  */
 #include_next <string.h>
+
+#undef _GL_ALREADY_INCLUDING_STRING_H
 
 #ifndef _GL_STRING_H
 #define _GL_STRING_H
@@ -56,6 +71,15 @@
 /* The definitions of _GL_FUNCDECL_RPL etc. are copied here.  */
 #ifndef _GL_CXXDEFS_H
 #define _GL_CXXDEFS_H
+
+/* Begin/end the GNULIB_NAMESPACE namespace.  */
+#if defined __cplusplus && defined GNULIB_NAMESPACE
+# define _GL_BEGIN_NAMESPACE namespace GNULIB_NAMESPACE {
+# define _GL_END_NAMESPACE }
+#else
+# define _GL_BEGIN_NAMESPACE
+# define _GL_END_NAMESPACE
+#endif
 
 /* The three most frequent use cases of these macros are:
 
@@ -151,14 +175,25 @@
    that redirects to rpl_func, if GNULIB_NAMESPACE is defined.
    Example:
      _GL_CXXALIAS_RPL (open, int, (const char *filename, int flags, ...));
- */
+
+   Wrapping rpl_func in an object with an inline conversion operator
+   avoids a reference to rpl_func unless GNULIB_NAMESPACE::func is
+   actually used in the program.  */
 #define _GL_CXXALIAS_RPL(func,rettype,parameters) \
   _GL_CXXALIAS_RPL_1 (func, rpl_##func, rettype, parameters)
 #if defined __cplusplus && defined GNULIB_NAMESPACE
 # define _GL_CXXALIAS_RPL_1(func,rpl_func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                                \
     {                                                         \
-      rettype (*const func) parameters = ::rpl_func;          \
+      static const struct _gl_ ## func ## _wrapper            \
+      {                                                       \
+        typedef rettype (*type) parameters;                   \
+                                                              \
+        inline operator type () const                         \
+        {                                                     \
+          return ::rpl_func;                                  \
+        }                                                     \
+      } func = {};                                            \
     }                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -175,8 +210,15 @@
 # define _GL_CXXALIAS_RPL_CAST_1(func,rpl_func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                                     \
     {                                                              \
-      rettype (*const func) parameters =                           \
-        reinterpret_cast<rettype(*)parameters>(::rpl_func);        \
+      static const struct _gl_ ## func ## _wrapper                 \
+      {                                                            \
+        typedef rettype (*type) parameters;                        \
+                                                                   \
+        inline operator type () const                              \
+        {                                                          \
+          return reinterpret_cast<type>(::rpl_func);               \
+        }                                                          \
+      } func = {};                                                 \
     }                                                              \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -190,19 +232,24 @@
    is defined.
    Example:
      _GL_CXXALIAS_SYS (open, int, (const char *filename, int flags, ...));
- */
+
+   Wrapping func in an object with an inline conversion operator
+   avoids a reference to func unless GNULIB_NAMESPACE::func is
+   actually used in the program.  */
 #if defined __cplusplus && defined GNULIB_NAMESPACE
-  /* If we were to write
-       rettype (*const func) parameters = ::func;
-     like above in _GL_CXXALIAS_RPL_1, the compiler could optimize calls
-     better (remove an indirection through a 'static' pointer variable),
-     but then the _GL_CXXALIASWARN macro below would cause a warning not only
-     for uses of ::func but also for uses of GNULIB_NAMESPACE::func.  */
-# define _GL_CXXALIAS_SYS(func,rettype,parameters) \
-    namespace GNULIB_NAMESPACE                     \
-    {                                              \
-      static rettype (*func) parameters = ::func;  \
-    }                                              \
+# define _GL_CXXALIAS_SYS(func,rettype,parameters)            \
+    namespace GNULIB_NAMESPACE                                \
+    {                                                         \
+      static const struct _gl_ ## func ## _wrapper            \
+      {                                                       \
+        typedef rettype (*type) parameters;                   \
+                                                              \
+        inline operator type () const                         \
+        {                                                     \
+          return ::func;                                      \
+        }                                                     \
+      } func = {};                                            \
+    }                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
 # define _GL_CXXALIAS_SYS(func,rettype,parameters) \
@@ -218,8 +265,15 @@
 # define _GL_CXXALIAS_SYS_CAST(func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                          \
     {                                                   \
-      static rettype (*func) parameters =               \
-        reinterpret_cast<rettype(*)parameters>(::func); \
+      static const struct _gl_ ## func ## _wrapper      \
+      {                                                 \
+        typedef rettype (*type) parameters;             \
+                                                        \
+        inline operator type () const                   \
+        {                                               \
+          return reinterpret_cast<type>(::func);        \
+        }                                               \
+      } func = {};                                      \
     }                                                   \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -242,9 +296,15 @@
 # define _GL_CXXALIAS_SYS_CAST2(func,rettype,parameters,rettype2,parameters2) \
     namespace GNULIB_NAMESPACE                                                \
     {                                                                         \
-      static rettype (*func) parameters =                                     \
-        reinterpret_cast<rettype(*)parameters>(                               \
-          (rettype2(*)parameters2)(::func));                                  \
+      static const struct _gl_ ## func ## _wrapper                            \
+      {                                                                       \
+        typedef rettype (*type) parameters;                                   \
+                                                                              \
+        inline operator type () const                                         \
+        {                                                                     \
+          return reinterpret_cast<type>((rettype2 (*) parameters2)(::func));  \
+        }                                                                     \
+      } func = {};                                                            \
     }                                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -713,15 +773,15 @@ _GL_WARN_ON_USE (strncat, "strncat is unportable - "
 #   undef strndup
 #   define strndup rpl_strndup
 #  endif
-_GL_FUNCDECL_RPL (strndup, char *, (char const *__string, size_t __n)
+_GL_FUNCDECL_RPL (strndup, char *, (char const *__s, size_t __n)
                                    _GL_ARG_NONNULL ((1)));
-_GL_CXXALIAS_RPL (strndup, char *, (char const *__string, size_t __n));
+_GL_CXXALIAS_RPL (strndup, char *, (char const *__s, size_t __n));
 # else
 #  if ! 1
-_GL_FUNCDECL_SYS (strndup, char *, (char const *__string, size_t __n)
+_GL_FUNCDECL_SYS (strndup, char *, (char const *__s, size_t __n)
                                    _GL_ARG_NONNULL ((1)));
 #  endif
-_GL_CXXALIAS_SYS (strndup, char *, (char const *__string, size_t __n));
+_GL_CXXALIAS_SYS (strndup, char *, (char const *__s, size_t __n));
 # endif
 _GL_CXXALIASWARN (strndup);
 #elif defined GNULIB_POSIXCHECK
@@ -741,17 +801,17 @@ _GL_WARN_ON_USE (strndup, "strndup is unportable - "
 #   undef strnlen
 #   define strnlen rpl_strnlen
 #  endif
-_GL_FUNCDECL_RPL (strnlen, size_t, (char const *__string, size_t __maxlen)
+_GL_FUNCDECL_RPL (strnlen, size_t, (char const *__s, size_t __maxlen)
                                    _GL_ATTRIBUTE_PURE
                                    _GL_ARG_NONNULL ((1)));
-_GL_CXXALIAS_RPL (strnlen, size_t, (char const *__string, size_t __maxlen));
+_GL_CXXALIAS_RPL (strnlen, size_t, (char const *__s, size_t __maxlen));
 # else
 #  if ! 1
-_GL_FUNCDECL_SYS (strnlen, size_t, (char const *__string, size_t __maxlen)
+_GL_FUNCDECL_SYS (strnlen, size_t, (char const *__s, size_t __maxlen)
                                    _GL_ATTRIBUTE_PURE
                                    _GL_ARG_NONNULL ((1)));
 #  endif
-_GL_CXXALIAS_SYS (strnlen, size_t, (char const *__string, size_t __maxlen));
+_GL_CXXALIAS_SYS (strnlen, size_t, (char const *__s, size_t __maxlen));
 # endif
 _GL_CXXALIASWARN (strnlen);
 #elif defined GNULIB_POSIXCHECK
@@ -1037,10 +1097,14 @@ _GL_WARN_ON_USE (strtok_r, "strtok_r is unportable - "
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define mbslen rpl_mbslen
 #  endif
-_GL_FUNCDECL_RPL (mbslen, size_t, (const char *string) _GL_ARG_NONNULL ((1)));
+_GL_FUNCDECL_RPL (mbslen, size_t, (const char *string)
+                                  _GL_ATTRIBUTE_PURE
+                                  _GL_ARG_NONNULL ((1)));
 _GL_CXXALIAS_RPL (mbslen, size_t, (const char *string));
 # else
-_GL_FUNCDECL_SYS (mbslen, size_t, (const char *string) _GL_ARG_NONNULL ((1)));
+_GL_FUNCDECL_SYS (mbslen, size_t, (const char *string)
+                                  _GL_ATTRIBUTE_PURE
+                                  _GL_ARG_NONNULL ((1)));
 _GL_CXXALIAS_SYS (mbslen, size_t, (const char *string));
 # endif
 _GL_CXXALIASWARN (mbslen);
@@ -1050,6 +1114,7 @@ _GL_CXXALIASWARN (mbslen);
 /* Return the number of multibyte characters in the character string starting
    at STRING and ending at STRING + LEN.  */
 _GL_EXTERN_C size_t mbsnlen (const char *string, size_t len)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1));
 #endif
 
@@ -1063,10 +1128,12 @@ _GL_EXTERN_C size_t mbsnlen (const char *string, size_t len)
 #   define mbschr rpl_mbschr /* avoid collision with HP-UX function */
 #  endif
 _GL_FUNCDECL_RPL (mbschr, char *, (const char *string, int c)
+                                  _GL_ATTRIBUTE_PURE
                                   _GL_ARG_NONNULL ((1)));
 _GL_CXXALIAS_RPL (mbschr, char *, (const char *string, int c));
 # else
 _GL_FUNCDECL_SYS (mbschr, char *, (const char *string, int c)
+                                  _GL_ATTRIBUTE_PURE
                                   _GL_ARG_NONNULL ((1)));
 _GL_CXXALIAS_SYS (mbschr, char *, (const char *string, int c));
 # endif
@@ -1083,10 +1150,12 @@ _GL_CXXALIASWARN (mbschr);
 #   define mbsrchr rpl_mbsrchr /* avoid collision with system function */
 #  endif
 _GL_FUNCDECL_RPL (mbsrchr, char *, (const char *string, int c)
+                                   _GL_ATTRIBUTE_PURE
                                    _GL_ARG_NONNULL ((1)));
 _GL_CXXALIAS_RPL (mbsrchr, char *, (const char *string, int c));
 # else
 _GL_FUNCDECL_SYS (mbsrchr, char *, (const char *string, int c)
+                                   _GL_ATTRIBUTE_PURE
                                    _GL_ARG_NONNULL ((1)));
 _GL_CXXALIAS_SYS (mbsrchr, char *, (const char *string, int c));
 # endif
@@ -1099,6 +1168,7 @@ _GL_CXXALIASWARN (mbsrchr);
    Unlike strstr(), this function works correctly in multibyte locales with
    encodings different from UTF-8.  */
 _GL_EXTERN_C char * mbsstr (const char *haystack, const char *needle)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1, 2));
 #endif
 
@@ -1110,6 +1180,7 @@ _GL_EXTERN_C char * mbsstr (const char *haystack, const char *needle)
    different lengths!
    Unlike strcasecmp(), this function works correctly in multibyte locales.  */
 _GL_EXTERN_C int mbscasecmp (const char *s1, const char *s2)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1, 2));
 #endif
 
@@ -1124,6 +1195,7 @@ _GL_EXTERN_C int mbscasecmp (const char *s1, const char *s2)
    Unlike strncasecmp(), this function works correctly in multibyte locales.
    But beware that N is not a byte count but a character count!  */
 _GL_EXTERN_C int mbsncasecmp (const char *s1, const char *s2, size_t n)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1, 2));
 #endif
 
@@ -1137,6 +1209,7 @@ _GL_EXTERN_C int mbsncasecmp (const char *s1, const char *s2, size_t n)
    Unlike strncasecmp(), this function works correctly in multibyte
    locales.  */
 _GL_EXTERN_C char * mbspcasecmp (const char *string, const char *prefix)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1, 2));
 #endif
 
@@ -1147,6 +1220,7 @@ _GL_EXTERN_C char * mbspcasecmp (const char *string, const char *prefix)
    strlen (haystack) < strlen (needle) !
    Unlike strcasestr(), this function works correctly in multibyte locales.  */
 _GL_EXTERN_C char * mbscasestr (const char *haystack, const char *needle)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1, 2));
 #endif
 
@@ -1157,6 +1231,7 @@ _GL_EXTERN_C char * mbscasestr (const char *haystack, const char *needle)
    if none exists.
    Unlike strcspn(), this function works correctly in multibyte locales.  */
 _GL_EXTERN_C size_t mbscspn (const char *string, const char *accept)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1, 2));
 #endif
 
@@ -1170,10 +1245,12 @@ _GL_EXTERN_C size_t mbscspn (const char *string, const char *accept)
 #   define mbspbrk rpl_mbspbrk /* avoid collision with HP-UX function */
 #  endif
 _GL_FUNCDECL_RPL (mbspbrk, char *, (const char *string, const char *accept)
+                                   _GL_ATTRIBUTE_PURE
                                    _GL_ARG_NONNULL ((1, 2)));
 _GL_CXXALIAS_RPL (mbspbrk, char *, (const char *string, const char *accept));
 # else
 _GL_FUNCDECL_SYS (mbspbrk, char *, (const char *string, const char *accept)
+                                   _GL_ATTRIBUTE_PURE
                                    _GL_ARG_NONNULL ((1, 2)));
 _GL_CXXALIAS_SYS (mbspbrk, char *, (const char *string, const char *accept));
 # endif
@@ -1187,6 +1264,7 @@ _GL_CXXALIASWARN (mbspbrk);
    if none exists.
    Unlike strspn(), this function works correctly in multibyte locales.  */
 _GL_EXTERN_C size_t mbsspn (const char *string, const char *reject)
+     _GL_ATTRIBUTE_PURE
      _GL_ARG_NONNULL ((1, 2));
 #endif
 
@@ -1306,6 +1384,7 @@ _GL_WARN_ON_USE (strsignal, "strsignal is unportable - "
 #if 0
 # if !1
 _GL_FUNCDECL_SYS (strverscmp, int, (const char *, const char *)
+                                   _GL_ATTRIBUTE_PURE
                                    _GL_ARG_NONNULL ((1, 2)));
 # endif
 _GL_CXXALIAS_SYS (strverscmp, int, (const char *, const char *));
@@ -1321,3 +1400,4 @@ _GL_WARN_ON_USE (strverscmp, "strverscmp is unportable - "
 
 #endif /* _GL_STRING_H */
 #endif /* _GL_STRING_H */
+#endif

@@ -1,6 +1,6 @@
 /* DO NOT EDIT! GENERATED AUTOMATICALLY! */
 /* Substitute for and wrapper around <unistd.h>.
-   Copyright (C) 2003-2011 Free Software Foundation, Inc.
+   Copyright (C) 2003-2017 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,35 +13,32 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <http://www.gnu.org/licenses/>.  */
+
+#ifndef _GL_UNISTD_H
 
 #if __GNUC__ >= 3
 #pragma GCC system_header
 #endif
 
 
+#ifdef _GL_INCLUDING_UNISTD_H
 /* Special invocation convention:
-   - On mingw, several headers, including <winsock2.h>, include <unistd.h>,
-     but we need to ensure that both the system <unistd.h> and <winsock2.h>
-     are completely included before we replace gethostname.  */
-#if 0 && 0 \
-  && !defined _GL_WINSOCK2_H_WITNESS && defined _WINSOCK2_H
-/* <unistd.h> is being indirectly included for the first time from
-   <winsock2.h>; avoid declaring any overrides.  */
-# if 1
-#  include_next <unistd.h>
-# else
-#  error unexpected; report this to bug-gnulib@gnu.org
-# endif
-# define _GL_WINSOCK2_H_WITNESS
+   - On Mac OS X 10.3.9 we have a sequence of nested includes
+     <unistd.h> -> <signal.h> -> <pthread.h> -> <unistd.h>
+     In this situation, the functions are not yet declared, therefore we cannot
+     provide the C++ aliases.  */
 
-/* Normal invocation.  */
-#elif !defined _GL_UNISTD_H
+#include_next <unistd.h>
+
+#else
+/* Normal invocation convention.  */
 
 /* The include_next requires a split double-inclusion guard.  */
 #if 1
+# define _GL_INCLUDING_UNISTD_H
 # include_next <unistd.h>
+# undef _GL_INCLUDING_UNISTD_H
 #endif
 
 /* Get all possible declarations of gethostname().  */
@@ -59,9 +56,13 @@
 #include <stddef.h>
 
 /* mingw doesn't define the SEEK_* or *_FILENO macros in <unistd.h>.  */
+/* MSVC declares 'unlink' in <stdio.h>, not in <unistd.h>.  We must include
+   it before we  #define unlink rpl_unlink.  */
 /* Cygwin 1.7.1 declares symlinkat in <stdio.h>, not in <unistd.h>.  */
 /* But avoid namespace pollution on glibc systems.  */
 #if (!(defined SEEK_CUR && defined SEEK_END && defined SEEK_SET) \
+     || ((0 || defined GNULIB_POSIXCHECK) \
+         && ((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)) \
      || ((0 || defined GNULIB_POSIXCHECK) \
          && defined __CYGWIN__)) \
     && ! defined __GLIBC__
@@ -76,16 +77,31 @@
 #endif
 
 /* mingw fails to declare _exit in <unistd.h>.  */
-/* mingw, BeOS, Haiku declare environ in <stdlib.h>, not in <unistd.h>.  */
+/* mingw, MSVC, BeOS, Haiku declare environ in <stdlib.h>, not in
+   <unistd.h>.  */
 /* Solaris declares getcwd not only in <unistd.h> but also in <stdlib.h>.  */
+/* OSF Tru64 Unix cannot see gnulib rpl_strtod when system <stdlib.h> is
+   included here.  */
 /* But avoid namespace pollution on glibc systems.  */
-#ifndef __GLIBC__
+#if !defined __GLIBC__ && !defined __osf__
+# define __need_system_stdlib_h
 # include <stdlib.h>
+# undef __need_system_stdlib_h
 #endif
 
-/* mingw declares getcwd in <io.h>, not in <unistd.h>.  */
-#if ((0 || defined GNULIB_POSIXCHECK) \
+/* Native Windows platforms declare chdir, getcwd, rmdir in
+   <io.h> and/or <direct.h>, not in <unistd.h>.
+   They also declare access(), chmod(), close(), dup(), dup2(), isatty(),
+   lseek(), read(), unlink(), write() in <io.h>.  */
+#if ((0 || 0 || 0 \
+      || defined GNULIB_POSIXCHECK) \
      && ((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__))
+# include <io.h>     /* mingw32, mingw64 */
+# include <direct.h> /* mingw64, MSVC 9 */
+#elif (0 || 0 || 0 || 0 \
+       || 0 || 1 || 0 || 0 \
+       || defined GNULIB_POSIXCHECK) \
+      && ((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)
 # include <io.h>
 #endif
 
@@ -98,6 +114,13 @@
 # include <netdb.h>
 #endif
 
+/* MSVC defines off_t in <sys/types.h>.
+   May also define off_t to a 64-bit type on native Windows.  */
+#if !1 || 0
+/* Get off_t.  */
+# include <sys/types.h>
+#endif
+
 #if (1 || 0 \
      || 1 || 0 \
      || 0 || 0 || defined GNULIB_POSIXCHECK)
@@ -108,12 +131,30 @@
 /* Get getopt(), optarg, optind, opterr, optopt.
    But avoid namespace pollution on glibc systems.  */
 #if 0 && !defined __GLIBC__ && !defined _GL_SYSTEM_GETOPT
+# define __need_getopt
 # include <getopt.h>
+#endif
+
+#ifndef _GL_INLINE_HEADER_BEGIN
+ #error "Please include config.h first."
+#endif
+_GL_INLINE_HEADER_BEGIN
+#ifndef _GL_UNISTD_INLINE
+# define _GL_UNISTD_INLINE _GL_INLINE
 #endif
 
 /* The definitions of _GL_FUNCDECL_RPL etc. are copied here.  */
 #ifndef _GL_CXXDEFS_H
 #define _GL_CXXDEFS_H
+
+/* Begin/end the GNULIB_NAMESPACE namespace.  */
+#if defined __cplusplus && defined GNULIB_NAMESPACE
+# define _GL_BEGIN_NAMESPACE namespace GNULIB_NAMESPACE {
+# define _GL_END_NAMESPACE }
+#else
+# define _GL_BEGIN_NAMESPACE
+# define _GL_END_NAMESPACE
+#endif
 
 /* The three most frequent use cases of these macros are:
 
@@ -209,14 +250,25 @@
    that redirects to rpl_func, if GNULIB_NAMESPACE is defined.
    Example:
      _GL_CXXALIAS_RPL (open, int, (const char *filename, int flags, ...));
- */
+
+   Wrapping rpl_func in an object with an inline conversion operator
+   avoids a reference to rpl_func unless GNULIB_NAMESPACE::func is
+   actually used in the program.  */
 #define _GL_CXXALIAS_RPL(func,rettype,parameters) \
   _GL_CXXALIAS_RPL_1 (func, rpl_##func, rettype, parameters)
 #if defined __cplusplus && defined GNULIB_NAMESPACE
 # define _GL_CXXALIAS_RPL_1(func,rpl_func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                                \
     {                                                         \
-      rettype (*const func) parameters = ::rpl_func;          \
+      static const struct _gl_ ## func ## _wrapper            \
+      {                                                       \
+        typedef rettype (*type) parameters;                   \
+                                                              \
+        inline operator type () const                         \
+        {                                                     \
+          return ::rpl_func;                                  \
+        }                                                     \
+      } func = {};                                            \
     }                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -233,8 +285,15 @@
 # define _GL_CXXALIAS_RPL_CAST_1(func,rpl_func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                                     \
     {                                                              \
-      rettype (*const func) parameters =                           \
-        reinterpret_cast<rettype(*)parameters>(::rpl_func);        \
+      static const struct _gl_ ## func ## _wrapper                 \
+      {                                                            \
+        typedef rettype (*type) parameters;                        \
+                                                                   \
+        inline operator type () const                              \
+        {                                                          \
+          return reinterpret_cast<type>(::rpl_func);               \
+        }                                                          \
+      } func = {};                                                 \
     }                                                              \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -248,19 +307,24 @@
    is defined.
    Example:
      _GL_CXXALIAS_SYS (open, int, (const char *filename, int flags, ...));
- */
+
+   Wrapping func in an object with an inline conversion operator
+   avoids a reference to func unless GNULIB_NAMESPACE::func is
+   actually used in the program.  */
 #if defined __cplusplus && defined GNULIB_NAMESPACE
-  /* If we were to write
-       rettype (*const func) parameters = ::func;
-     like above in _GL_CXXALIAS_RPL_1, the compiler could optimize calls
-     better (remove an indirection through a 'static' pointer variable),
-     but then the _GL_CXXALIASWARN macro below would cause a warning not only
-     for uses of ::func but also for uses of GNULIB_NAMESPACE::func.  */
-# define _GL_CXXALIAS_SYS(func,rettype,parameters) \
-    namespace GNULIB_NAMESPACE                     \
-    {                                              \
-      static rettype (*func) parameters = ::func;  \
-    }                                              \
+# define _GL_CXXALIAS_SYS(func,rettype,parameters)            \
+    namespace GNULIB_NAMESPACE                                \
+    {                                                         \
+      static const struct _gl_ ## func ## _wrapper            \
+      {                                                       \
+        typedef rettype (*type) parameters;                   \
+                                                              \
+        inline operator type () const                         \
+        {                                                     \
+          return ::func;                                      \
+        }                                                     \
+      } func = {};                                            \
+    }                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
 # define _GL_CXXALIAS_SYS(func,rettype,parameters) \
@@ -276,8 +340,15 @@
 # define _GL_CXXALIAS_SYS_CAST(func,rettype,parameters) \
     namespace GNULIB_NAMESPACE                          \
     {                                                   \
-      static rettype (*func) parameters =               \
-        reinterpret_cast<rettype(*)parameters>(::func); \
+      static const struct _gl_ ## func ## _wrapper      \
+      {                                                 \
+        typedef rettype (*type) parameters;             \
+                                                        \
+        inline operator type () const                   \
+        {                                               \
+          return reinterpret_cast<type>(::func);        \
+        }                                               \
+      } func = {};                                      \
     }                                                   \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -300,9 +371,15 @@
 # define _GL_CXXALIAS_SYS_CAST2(func,rettype,parameters,rettype2,parameters2) \
     namespace GNULIB_NAMESPACE                                                \
     {                                                                         \
-      static rettype (*func) parameters =                                     \
-        reinterpret_cast<rettype(*)parameters>(                               \
-          (rettype2(*)parameters2)(::func));                                  \
+      static const struct _gl_ ## func ## _wrapper                            \
+      {                                                                       \
+        typedef rettype (*type) parameters;                                   \
+                                                                              \
+        inline operator type () const                                         \
+        {                                                                     \
+          return reinterpret_cast<type>((rettype2 (*) parameters2)(::func));  \
+        }                                                                     \
+      } func = {};                                                            \
     }                                                                         \
     _GL_EXTERN_C int _gl_cxxalias_dummy
 #else
@@ -536,11 +613,23 @@ _GL_WARN_ON_USE (access, "the access function is a security risk - "
 
 
 #if 0
+_GL_CXXALIAS_SYS (chdir, int, (const char *file) _GL_ARG_NONNULL ((1)));
+_GL_CXXALIASWARN (chdir);
+#elif defined GNULIB_POSIXCHECK
+# undef chdir
+# if HAVE_RAW_DECL_CHDIR
+_GL_WARN_ON_USE (chown, "chdir is not always in <unistd.h> - "
+                 "use gnulib module chdir for portability");
+# endif
+#endif
+
+
+#if 0
 /* Change the owner of FILE to UID (if UID is not -1) and the group of FILE
    to GID (if GID is not -1).  Follow symbolic links.
    Return 0 if successful, otherwise -1 and errno set.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/chown.html>.  */
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/chown.html.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef chown
@@ -592,23 +681,31 @@ _GL_WARN_ON_USE (close, "close does not portably work on sockets - "
 
 
 #if 0
-# if !(defined __cplusplus && defined GNULIB_NAMESPACE)
-#  define dup rpl_dup
-# endif
+# if 0
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   define dup rpl_dup
+#  endif
 _GL_FUNCDECL_RPL (dup, int, (int oldfd));
 _GL_CXXALIAS_RPL (dup, int, (int oldfd));
-#else
+# else
 _GL_CXXALIAS_SYS (dup, int, (int oldfd));
-#endif
+# endif
 _GL_CXXALIASWARN (dup);
+#elif defined GNULIB_POSIXCHECK
+# undef dup
+# if HAVE_RAW_DECL_DUP
+_GL_WARN_ON_USE (dup, "dup is unportable - "
+                 "use gnulib module dup for portability");
+# endif
+#endif
 
 
 #if 0
 /* Copy the file descriptor OLDFD into file descriptor NEWFD.  Do nothing if
    NEWFD = OLDFD, otherwise close NEWFD first if it is open.
    Return newfd if successful, otherwise -1 and errno set.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/dup2.html>.  */
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/dup2.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define dup2 rpl_dup2
@@ -665,6 +762,12 @@ _GL_WARN_ON_USE (dup3, "dup3 is unportable - "
 /* Set of environment variables and values.  An array of strings of the form
    "VARIABLE=VALUE", terminated with a NULL.  */
 #  if defined __APPLE__ && defined __MACH__
+#   include <TargetConditionals.h>
+#   if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
+#    define _GL_USE_CRT_EXTERNS
+#   endif
+#  endif
+#  ifdef _GL_USE_CRT_EXTERNS
 #   include <crt_externs.h>
 #   define environ (*_NSGetEnviron ())
 #  else
@@ -679,7 +782,7 @@ extern char **environ;
 # endif
 #elif defined GNULIB_POSIXCHECK
 # if HAVE_RAW_DECL_ENVIRON
-static inline char ***
+_GL_UNISTD_INLINE char ***
 rpl_environ (void)
 {
   return &environ;
@@ -737,8 +840,8 @@ _GL_WARN_ON_USE (faccessat, "faccessat is not portable - "
 /* Change the process' current working directory to the directory on which
    the given file descriptor is open.
    Return 0 if successful, otherwise -1 and errno set.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/fchdir.html>.  */
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/fchdir.html>.  */
 # if ! 1
 _GL_FUNCDECL_SYS (fchdir, int, (int /*fd*/));
 
@@ -798,8 +901,27 @@ _GL_WARN_ON_USE (fchownat, "fchownat is not portable - "
 #if 0
 /* Synchronize changes to a file.
    Return 0 if successful, otherwise -1 and errno set.
-   See POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/fsync.html>.  */
+   See POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/fdatasync.html>.  */
+# if !1 || !1
+_GL_FUNCDECL_SYS (fdatasync, int, (int fd));
+# endif
+_GL_CXXALIAS_SYS (fdatasync, int, (int fd));
+_GL_CXXALIASWARN (fdatasync);
+#elif defined GNULIB_POSIXCHECK
+# undef fdatasync
+# if HAVE_RAW_DECL_FDATASYNC
+_GL_WARN_ON_USE (fdatasync, "fdatasync is unportable - "
+                 "use gnulib module fdatasync for portability");
+# endif
+#endif
+
+
+#if 0
+/* Synchronize changes, including metadata, to a file.
+   Return 0 if successful, otherwise -1 and errno set.
+   See POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/fsync.html>.  */
 # if !1
 _GL_FUNCDECL_SYS (fsync, int, (int fd));
 # endif
@@ -817,12 +939,21 @@ _GL_WARN_ON_USE (fsync, "fsync is unportable - "
 #if 0
 /* Change the size of the file to which FD is opened to become equal to LENGTH.
    Return 0 if successful, otherwise -1 and errno set.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/ftruncate.html>.  */
-# if !1
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/ftruncate.html>.  */
+# if 0
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef ftruncate
+#   define ftruncate rpl_ftruncate
+#  endif
+_GL_FUNCDECL_RPL (ftruncate, int, (int fd, off_t length));
+_GL_CXXALIAS_RPL (ftruncate, int, (int fd, off_t length));
+# else
+#  if !1
 _GL_FUNCDECL_SYS (ftruncate, int, (int fd, off_t length));
-# endif
+#  endif
 _GL_CXXALIAS_SYS (ftruncate, int, (int fd, off_t length));
+# endif
 _GL_CXXALIASWARN (ftruncate);
 #elif defined GNULIB_POSIXCHECK
 # undef ftruncate
@@ -838,8 +969,8 @@ _GL_WARN_ON_USE (ftruncate, "ftruncate is unportable - "
    of BUF.
    Return BUF if successful, or NULL if the directory couldn't be determined
    or SIZE was too small.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/getcwd.html>.
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/getcwd.html>.
    Additionally, the gnulib module 'getcwd' guarantees the following GNU
    extension: If BUF is NULL, an array is allocated with 'malloc'; the array
    is SIZE bytes long, unless SIZE == 0, in which case it is as big as
@@ -904,10 +1035,19 @@ _GL_WARN_ON_USE (getdomainname, "getdomainname is unportable - "
 #if 0
 /* Return the maximum number of file descriptors in the current process.
    In POSIX, this is same as sysconf (_SC_OPEN_MAX).  */
-# if !1
+# if 0
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef getdtablesize
+#   define getdtablesize rpl_getdtablesize
+#  endif
+_GL_FUNCDECL_RPL (getdtablesize, int, (void));
+_GL_CXXALIAS_RPL (getdtablesize, int, (void));
+# else
+#  if !1
 _GL_FUNCDECL_SYS (getdtablesize, int, (void));
-# endif
+#  endif
 _GL_CXXALIAS_SYS (getdtablesize, int, (void));
+# endif
 _GL_CXXALIASWARN (getdtablesize);
 #elif defined GNULIB_POSIXCHECK
 # undef getdtablesize
@@ -1109,7 +1249,7 @@ _GL_CXXALIAS_RPL (getpagesize, int, (void));
 #     define getpagesize() _gl_getpagesize ()
 #    else
 #     if !GNULIB_defined_getpagesize_function
-static inline int
+_GL_UNISTD_INLINE int
 getpagesize ()
 {
   return _gl_getpagesize ();
@@ -1199,11 +1339,32 @@ _GL_WARN_ON_USE (group_member, "group_member is unportable - "
 
 
 #if 0
+# if 0
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef isatty
+#   define isatty rpl_isatty
+#  endif
+_GL_FUNCDECL_RPL (isatty, int, (int fd));
+_GL_CXXALIAS_RPL (isatty, int, (int fd));
+# else
+_GL_CXXALIAS_SYS (isatty, int, (int fd));
+# endif
+_GL_CXXALIASWARN (isatty);
+#elif defined GNULIB_POSIXCHECK
+# undef isatty
+# if HAVE_RAW_DECL_ISATTY
+_GL_WARN_ON_USE (isatty, "isatty has portability problems on native Windows - "
+                 "use gnulib module isatty for portability");
+# endif
+#endif
+
+
+#if 0
 /* Change the owner of FILE to UID (if UID is not -1) and the group of FILE
    to GID (if GID is not -1).  Do not follow symbolic links.
    Return 0 if successful, otherwise -1 and errno set.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/lchown.html>.  */
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/lchown.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef lchown
@@ -1232,8 +1393,8 @@ _GL_WARN_ON_USE (lchown, "lchown is unportable to pre-POSIX.1-2001 systems - "
 #if 0
 /* Create a new hard link for an existing file.
    Return 0 if successful, otherwise -1 and errno set.
-   See POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/link.html>.  */
+   See POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/link.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define link rpl_link
@@ -1298,8 +1459,8 @@ _GL_WARN_ON_USE (linkat, "linkat is unportable - "
 #if 0
 /* Set the offset of FD relative to SEEK_SET, SEEK_CUR, or SEEK_END.
    Return the new offset if successful, otherwise -1 and errno set.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/lseek.html>.  */
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/lseek.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define lseek rpl_lseek
@@ -1369,8 +1530,9 @@ _GL_WARN_ON_USE (pipe2, "pipe2 is unportable - "
 #if 0
 /* Read at most BUFSIZE bytes from FD into BUF, starting at OFFSET.
    Return the number of bytes placed into BUF if successful, otherwise
-   set errno and return -1.  0 indicates EOF.  See the POSIX:2001
-   specification <http://www.opengroup.org/susv3xsh/pread.html>.  */
+   set errno and return -1.  0 indicates EOF.
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/pread.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef pread
@@ -1404,8 +1566,8 @@ _GL_WARN_ON_USE (pread, "pread is unportable - "
 /* Write at most BUFSIZE bytes from BUF into FD, starting at OFFSET.
    Return the number of bytes written if successful, otherwise
    set errno and return -1.  0 indicates nothing written.  See the
-   POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/pwrite.html>.  */
+   POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/pwrite.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef pwrite
@@ -1437,9 +1599,9 @@ _GL_WARN_ON_USE (pwrite, "pwrite is unportable - "
 
 #if 1
 /* Read up to COUNT bytes from file descriptor FD into the buffer starting
-   at BUF.  See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/read.html>.  */
-# if 0 && 0
+   at BUF.  See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/read.html>.  */
+# if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef read
 #   define read rpl_read
@@ -1461,8 +1623,8 @@ _GL_CXXALIASWARN (read);
 /* Read the contents of the symbolic link FILE and place the first BUFSIZE
    bytes of it into BUF.  Return the number of bytes placed into BUF if
    successful, otherwise -1 and errno set.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/readlink.html>.  */
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/readlink.html>.  */
 # if 1
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define readlink rpl_readlink
@@ -1492,13 +1654,24 @@ _GL_WARN_ON_USE (readlink, "readlink is unportable - "
 
 
 #if 0
-# if !1
+# if 0
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   define readlinkat rpl_readlinkat
+#  endif
+_GL_FUNCDECL_RPL (readlinkat, ssize_t,
+                  (int fd, char const *file, char *buf, size_t len)
+                  _GL_ARG_NONNULL ((2, 3)));
+_GL_CXXALIAS_RPL (readlinkat, ssize_t,
+                  (int fd, char const *file, char *buf, size_t len));
+# else
+#  if !1
 _GL_FUNCDECL_SYS (readlinkat, ssize_t,
                   (int fd, char const *file, char *buf, size_t len)
                   _GL_ARG_NONNULL ((2, 3)));
-# endif
+#  endif
 _GL_CXXALIAS_SYS (readlinkat, ssize_t,
                   (int fd, char const *file, char *buf, size_t len));
+# endif
 _GL_CXXALIASWARN (readlinkat);
 #elif defined GNULIB_POSIXCHECK
 # undef readlinkat
@@ -1531,10 +1704,37 @@ _GL_WARN_ON_USE (rmdir, "rmdir is unportable - "
 
 
 #if 0
+/* Set the host name of the machine.
+   The host name may or may not be fully qualified.
+
+   Put LEN bytes of NAME into the host name.
+   Return 0 if successful, otherwise, set errno and return -1.
+
+   Platforms with no ability to set the hostname return -1 and set
+   errno = ENOSYS.  */
+# if !1 || !1
+_GL_FUNCDECL_SYS (sethostname, int, (const char *name, size_t len)
+                                    _GL_ARG_NONNULL ((1)));
+# endif
+/* Need to cast, because on Solaris 11 2011-10, Mac OS X 10.5, IRIX 6.5
+   and FreeBSD 6.4 the second parameter is int.  On Solaris 11
+   2011-10, the first parameter is not const.  */
+_GL_CXXALIAS_SYS_CAST (sethostname, int, (const char *name, size_t len));
+_GL_CXXALIASWARN (sethostname);
+#elif defined GNULIB_POSIXCHECK
+# undef sethostname
+# if HAVE_RAW_DECL_SETHOSTNAME
+_GL_WARN_ON_USE (sethostname, "sethostname is unportable - "
+                 "use gnulib module sethostname for portability");
+# endif
+#endif
+
+
+#if 0
 /* Pause the execution of the current thread for N seconds.
    Returns the number of seconds left to sleep.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/sleep.html>.  */
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/sleep.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef sleep
@@ -1585,13 +1785,25 @@ _GL_WARN_ON_USE (symlink, "symlink is not portable - "
 
 
 #if 0
-# if !1
+# if 0
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef symlinkat
+#   define symlinkat rpl_symlinkat
+#  endif
+_GL_FUNCDECL_RPL (symlinkat, int,
+                  (char const *contents, int fd, char const *file)
+                  _GL_ARG_NONNULL ((1, 3)));
+_GL_CXXALIAS_RPL (symlinkat, int,
+                  (char const *contents, int fd, char const *file));
+# else
+#  if !1
 _GL_FUNCDECL_SYS (symlinkat, int,
                   (char const *contents, int fd, char const *file)
                   _GL_ARG_NONNULL ((1, 3)));
-# endif
+#  endif
 _GL_CXXALIAS_SYS (symlinkat, int,
                   (char const *contents, int fd, char const *file));
+# endif
 _GL_CXXALIASWARN (symlinkat);
 #elif defined GNULIB_POSIXCHECK
 # undef symlinkat
@@ -1683,7 +1895,7 @@ _GL_WARN_ON_USE (unlinkat, "unlinkat is not portable - "
 /* Pause the execution of the current thread for N microseconds.
    Returns 0 on completion, or -1 on range error.
    See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/sleep.html>.  */
+   <http://www.opengroup.org/susv3xsh/usleep.html>.  */
 # if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef usleep
@@ -1709,9 +1921,9 @@ _GL_WARN_ON_USE (usleep, "usleep is unportable - "
 
 #if 0
 /* Write up to COUNT bytes starting at BUF to file descriptor FD.
-   See the POSIX:2001 specification
-   <http://www.opengroup.org/susv3xsh/write.html>.  */
-# if 0 && (0 || 1)
+   See the POSIX:2008 specification
+   <http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html>.  */
+# if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   undef write
 #   define write rpl_write
@@ -1728,6 +1940,8 @@ _GL_CXXALIAS_SYS_CAST (write, ssize_t, (int fd, const void *buf, size_t count));
 _GL_CXXALIASWARN (write);
 #endif
 
+_GL_INLINE_HEADER_END
 
 #endif /* _GL_UNISTD_H */
+#endif /* _GL_INCLUDING_UNISTD_H */
 #endif /* _GL_UNISTD_H */
