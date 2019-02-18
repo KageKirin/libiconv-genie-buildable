@@ -687,7 +687,7 @@
 #define ICONV_CONST 
 
 /* Define to the value of ${prefix}, as a string. */
-#define INSTALLPREFIX "/Users/christian.helmich/Documents/Code/badassX/scaffolding/thirdparty/libiconv-1.14/build"
+#define INSTALLPREFIX ".build/"
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */
