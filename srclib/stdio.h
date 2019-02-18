@@ -1226,14 +1226,14 @@ _GL_WARN_ON_USE (popen, "popen is buggy on some platforms - "
 #   if 0 || 0
 _GL_FUNCDECL_RPL_1 (__printf__, int,
                     (const char *format, ...)
-                    __asm__ ("_"
+                    __asm__ (""
                              _GL_STDIO_MACROEXPAND_AND_STRINGIZE(rpl_printf))
                     _GL_ATTRIBUTE_FORMAT_PRINTF (1, 2)
                     _GL_ARG_NONNULL ((1)));
 #   else
 _GL_FUNCDECL_RPL_1 (__printf__, int,
                     (const char *format, ...)
-                    __asm__ ("_"
+                    __asm__ (""
                              _GL_STDIO_MACROEXPAND_AND_STRINGIZE(rpl_printf))
                     _GL_ATTRIBUTE_FORMAT_PRINTF_SYSTEM (1, 2)
                     _GL_ARG_NONNULL ((1)));
@@ -1388,7 +1388,7 @@ _GL_WARN_ON_USE (renameat, "renameat is not portable - "
 #   endif
 _GL_FUNCDECL_RPL_1 (__scanf__, int,
                     (const char *format, ...)
-                    __asm__ ("_"
+                    __asm__ (""
                              _GL_STDIO_MACROEXPAND_AND_STRINGIZE(rpl_scanf))
                     _GL_ATTRIBUTE_FORMAT_SCANF_SYSTEM (1, 2)
                     _GL_ARG_NONNULL ((1)));
