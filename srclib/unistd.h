@@ -758,7 +758,7 @@ _GL_WARN_ON_USE (dup3, "dup3 is unportable - "
 
 
 #if 1
-# if !0
+# if !1
 /* Set of environment variables and values.  An array of strings of the form
    "VARIABLE=VALUE", terminated with a NULL.  */
 #  if defined __APPLE__ && defined __MACH__
@@ -1625,7 +1625,7 @@ _GL_CXXALIASWARN (read);
    successful, otherwise -1 and errno set.
    See the POSIX:2008 specification
    <http://pubs.opengroup.org/onlinepubs/9699919799/functions/readlink.html>.  */
-# if 1
+# if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define readlink rpl_readlink
 #  endif

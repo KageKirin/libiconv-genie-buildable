@@ -40,7 +40,7 @@ mkinstalldirs = $(SHELL) ../build-aux/mkinstalldirs
 # Programs used by "make install-strip":
 STRIP = /usr/bin/strip
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-install_sh = ${SHELL} /Users/christian.helmich/Documents/Code/Projects/Area51/Kenya.workspace-test/scaffolding/thirdparty/iconv/iconv/build-aux/install-sh
+install_sh = ${SHELL} /app/build-aux/install-sh
 
 #### End of system configuration section. ####
 
@@ -55,7 +55,7 @@ top_builddir = ..
 EXEEXT = 
 
 # Needed by RELOCATABLE_LDFLAGS.
-host = x86_64-apple-darwin18.2.0
+host = x86_64-pc-linux-gnu
 
 OBJECTS_RES_yes = iconv.res
 OBJECTS_RES_no =
@@ -111,7 +111,7 @@ iconv_LDFLAGS = `if test -n '$(RELOCATABLE_LDFLAGS)'; then $(RELOCATABLE_LDFLAGS
 # ../lib/libiconv.la entirely.
 install : all force
 	if [ ! -d $(DESTDIR)$(bindir) ] ; then $(mkinstalldirs) $(DESTDIR)$(bindir) ; fi
-	case "darwin18.2.0" in \
+	case "linux-gnu" in \
 	  hpux*) $(CC) $(LDFLAGS) $(CFLAGS) $(iconv_LDFLAGS) iconv.o ../srclib/libicrt.a -L$(DESTDIR)$(libdir) -liconv  $(OBJECTS_RES_no) `if test -n '$(DESTDIR)'; then echo " -Wl,+b -Wl,$(libdir)"; fi` -o iconv$(EXEEXT);; \
 	  *) $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) $(iconv_LDFLAGS) iconv.o ../srclib/libicrt.a $(DESTDIR)$(libdir)/libiconv.la  $(OBJECTS_RES_no) -o iconv$(EXEEXT);; \
 	esac

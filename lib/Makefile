@@ -104,7 +104,7 @@ install-lib : all force
 install : all force
 	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
 	$(LIBTOOL_INSTALL) $(INSTALL) libiconv.la $(DESTDIR)$(libdir)/libiconv.la
-	case "darwin18.2.0" in \
+	case "linux-gnu" in \
 	  aix*) (cd $(DESTDIR)$(libdir) && \
 	         objects=`ar t libiconv.a`" "`ar t /lib/libiconv.a` && \
 	         ar x libiconv.a && ar x /lib/libiconv.a && \

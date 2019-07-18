@@ -42,7 +42,7 @@
 
 /* Define to 1 if realpath() can malloc memory, always gives an absolute path,
    and handles trailing slash correctly. */
-/* #undef FUNC_REALPATH_WORKS */
+#define FUNC_REALPATH_WORKS 1
 
 /* Define if gettimeofday clobbers the localtime buffer. */
 /* #undef GETTIMEOFDAY_CLOBBERS_LOCALTIME */
@@ -122,13 +122,13 @@
 /* Define to 1 if you have the `canonicalize_file_name' function. */
 /* #undef HAVE_CANONICALIZE_FILE_NAME */
 
-/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
-#define HAVE_CFLOCALECOPYCURRENT 1
+/* #undef HAVE_CFLOCALECOPYCURRENT */
 
-/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
    the CoreFoundation framework. */
-#define HAVE_CFPREFERENCESCOPYAPPVALUE 1
+/* #undef HAVE_CFPREFERENCESCOPYAPPVALUE */
 
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
@@ -148,27 +148,27 @@
 
 /* Define to 1 if you have the declaration of `fflush_unlocked', and to 0 if
    you don't. */
-#define HAVE_DECL_FFLUSH_UNLOCKED 0
+#define HAVE_DECL_FFLUSH_UNLOCKED 1
 
 /* Define to 1 if you have the declaration of `fgets_unlocked', and to 0 if
    you don't. */
-#define HAVE_DECL_FGETS_UNLOCKED 0
+#define HAVE_DECL_FGETS_UNLOCKED 1
 
 /* Define to 1 if you have the declaration of `fputc_unlocked', and to 0 if
    you don't. */
-#define HAVE_DECL_FPUTC_UNLOCKED 0
+#define HAVE_DECL_FPUTC_UNLOCKED 1
 
 /* Define to 1 if you have the declaration of `fputs_unlocked', and to 0 if
    you don't. */
-#define HAVE_DECL_FPUTS_UNLOCKED 0
+#define HAVE_DECL_FPUTS_UNLOCKED 1
 
 /* Define to 1 if you have the declaration of `fread_unlocked', and to 0 if
    you don't. */
-#define HAVE_DECL_FREAD_UNLOCKED 0
+#define HAVE_DECL_FREAD_UNLOCKED 1
 
 /* Define to 1 if you have the declaration of `fwrite_unlocked', and to 0 if
    you don't. */
-#define HAVE_DECL_FWRITE_UNLOCKED 0
+#define HAVE_DECL_FWRITE_UNLOCKED 1
 
 /* Define to 1 if you have the declaration of `getchar_unlocked', and to 0 if
    you don't. */
@@ -180,11 +180,11 @@
 
 /* Define to 1 if you have the declaration of `program_invocation_name', and
    to 0 if you don't. */
-#define HAVE_DECL_PROGRAM_INVOCATION_NAME 0
+#define HAVE_DECL_PROGRAM_INVOCATION_NAME 1
 
 /* Define to 1 if you have the declaration of `program_invocation_short_name',
    and to 0 if you don't. */
-#define HAVE_DECL_PROGRAM_INVOCATION_SHORT_NAME 0
+#define HAVE_DECL_PROGRAM_INVOCATION_SHORT_NAME 1
 
 /* Define to 1 if you have the declaration of `putchar_unlocked', and to 0 if
    you don't. */
@@ -210,7 +210,7 @@
 #define HAVE_DLFCN_H 1
 
 /* Define if you have the declaration of environ. */
-/* #undef HAVE_ENVIRON_DECL */
+#define HAVE_ENVIRON_DECL 1
 
 /* Define to 1 if you have the `getcwd' function. */
 #define HAVE_GETCWD 1
@@ -222,7 +222,7 @@
 /* #undef HAVE_GETEXECNAME */
 
 /* Define to 1 if you have the `getprogname' function. */
-#define HAVE_GETPROGNAME 1
+/* #undef HAVE_GETPROGNAME */
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 /* #undef HAVE_GETTEXT */
@@ -299,16 +299,16 @@
 #define HAVE_RAW_DECL_DUP2 1
 
 /* Define to 1 if dup3 is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_DUP3 */
+#define HAVE_RAW_DECL_DUP3 1
 
 /* Define to 1 if endusershell is declared even after undefining macros. */
 #define HAVE_RAW_DECL_ENDUSERSHELL 1
 
 /* Define to 1 if environ is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_ENVIRON */
+#define HAVE_RAW_DECL_ENVIRON 1
 
 /* Define to 1 if euidaccess is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_EUIDACCESS */
+#define HAVE_RAW_DECL_EUIDACCESS 1
 
 /* Define to 1 if faccessat is declared even after undefining macros. */
 #define HAVE_RAW_DECL_FACCESSAT 1
@@ -326,7 +326,7 @@
 #define HAVE_RAW_DECL_FCNTL 1
 
 /* Define to 1 if fdatasync is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_FDATASYNC */
+#define HAVE_RAW_DECL_FDATASYNC 1
 
 /* Define to 1 if ffsl is declared even after undefining macros. */
 #define HAVE_RAW_DECL_FFSL 1
@@ -335,7 +335,7 @@
 #define HAVE_RAW_DECL_FFSLL 1
 
 /* Define to 1 if fpurge is declared even after undefining macros. */
-#define HAVE_RAW_DECL_FPURGE 1
+/* #undef HAVE_RAW_DECL_FPURGE */
 
 /* Define to 1 if fseeko is declared even after undefining macros. */
 #define HAVE_RAW_DECL_FSEEKO 1
@@ -392,7 +392,7 @@
 #define HAVE_RAW_DECL_GETPAGESIZE 1
 
 /* Define to 1 if gets is declared even after undefining macros. */
-#define HAVE_RAW_DECL_GETS 1
+/* #undef HAVE_RAW_DECL_GETS */
 
 /* Define to 1 if getsubopt is declared even after undefining macros. */
 #define HAVE_RAW_DECL_GETSUBOPT 1
@@ -440,40 +440,40 @@
 #define HAVE_RAW_DECL_MEMMEM 1
 
 /* Define to 1 if mempcpy is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MEMPCPY */
+#define HAVE_RAW_DECL_MEMPCPY 1
 
 /* Define to 1 if memrchr is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MEMRCHR */
+#define HAVE_RAW_DECL_MEMRCHR 1
 
 /* Define to 1 if mkdirat is declared even after undefining macros. */
 #define HAVE_RAW_DECL_MKDIRAT 1
 
 /* Define to 1 if mkdtemp is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MKDTEMP */
+#define HAVE_RAW_DECL_MKDTEMP 1
 
 /* Define to 1 if mkfifo is declared even after undefining macros. */
 #define HAVE_RAW_DECL_MKFIFO 1
 
 /* Define to 1 if mkfifoat is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MKFIFOAT */
+#define HAVE_RAW_DECL_MKFIFOAT 1
 
 /* Define to 1 if mknod is declared even after undefining macros. */
 #define HAVE_RAW_DECL_MKNOD 1
 
 /* Define to 1 if mknodat is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MKNODAT */
+#define HAVE_RAW_DECL_MKNODAT 1
 
 /* Define to 1 if mkostemp is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MKOSTEMP */
+#define HAVE_RAW_DECL_MKOSTEMP 1
 
 /* Define to 1 if mkostemps is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MKOSTEMPS */
+#define HAVE_RAW_DECL_MKOSTEMPS 1
 
 /* Define to 1 if mkstemp is declared even after undefining macros. */
 #define HAVE_RAW_DECL_MKSTEMP 1
 
 /* Define to 1 if mkstemps is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_MKSTEMPS */
+#define HAVE_RAW_DECL_MKSTEMPS 1
 
 /* Define to 1 if openat is declared even after undefining macros. */
 #define HAVE_RAW_DECL_OPENAT 1
@@ -485,7 +485,7 @@
 #define HAVE_RAW_DECL_PIPE 1
 
 /* Define to 1 if pipe2 is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_PIPE2 */
+#define HAVE_RAW_DECL_PIPE2 1
 
 /* Define to 1 if popen is declared even after undefining macros. */
 #define HAVE_RAW_DECL_POPEN 1
@@ -509,7 +509,7 @@
 #define HAVE_RAW_DECL_PWRITE 1
 
 /* Define to 1 if qsort_r is declared even after undefining macros. */
-#define HAVE_RAW_DECL_QSORT_R 1
+/* #undef HAVE_RAW_DECL_QSORT_R */
 
 /* Define to 1 if random is declared even after undefining macros. */
 #define HAVE_RAW_DECL_RANDOM 1
@@ -605,7 +605,7 @@
 #define HAVE_RAW_DECL_STRCASESTR 1
 
 /* Define to 1 if strchrnul is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_STRCHRNUL */
+#define HAVE_RAW_DECL_STRCHRNUL 1
 
 /* Define to 1 if strdup is declared even after undefining macros. */
 #define HAVE_RAW_DECL_STRDUP 1
@@ -644,7 +644,7 @@
 #define HAVE_RAW_DECL_STRTOULL 1
 
 /* Define to 1 if strverscmp is declared even after undefining macros. */
-/* #undef HAVE_RAW_DECL_STRVERSCMP */
+#define HAVE_RAW_DECL_STRVERSCMP 1
 
 /* Define to 1 if symlink is declared even after undefining macros. */
 #define HAVE_RAW_DECL_SYMLINK 1
@@ -767,7 +767,7 @@
 #define HAVE_UNSIGNED_LONG_LONG_INT 1
 
 /* Define if you have a global __progname variable */
-#define HAVE_VAR___PROGNAME 1
+/* #undef HAVE_VAR___PROGNAME */
 
 /* Define to 1 or 0, depending whether the compiler supports simple visibility
    declarations. */
@@ -810,11 +810,11 @@
 #define ICONV_CONST 
 
 /* Define to the value of ${prefix}, as a string. */
-#define INSTALLPREFIX ".build/"
+#define INSTALLPREFIX "/usr/local"
 
 /* Define to 1 if 'lstat' dereferences a symlink specified with a trailing
    slash. */
-/* #undef LSTAT_FOLLOWS_SLASHED_SYMLINK */
+#define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
@@ -854,7 +854,7 @@
 /* #undef PTRDIFF_T_SUFFIX */
 
 /* Define to 1 if readlink fails to recognize a trailing slash. */
-#define READLINK_TRAILING_SLASH_BUG 1
+/* #undef READLINK_TRAILING_SLASH_BUG */
 
 /* Define to 1 if stat needs help when passed a directory name with a trailing
    slash */
@@ -862,10 +862,10 @@
 
 /* Define to 1 if stat needs help when passed a file name with a trailing
    slash */
-#define REPLACE_FUNC_STAT_FILE 1
+/* #undef REPLACE_FUNC_STAT_FILE */
 
 /* Define to 1 if strerror(0) does not return a message implying success. */
-#define REPLACE_STRERROR_0 1
+/* #undef REPLACE_STRERROR_0 */
 
 /* Define to l, ll, u, ul, ull, etc., as suitable for constants of type
    'sig_atomic_t'. */
@@ -894,7 +894,7 @@
 
 /* Define to the prefix of C symbols at the assembler and linker level, either
    an underscore or empty. */
-#define USER_LABEL_PREFIX _
+#define USER_LABEL_PREFIX 
 
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
@@ -1080,7 +1080,7 @@
 #  define _GL_INLINE extern inline __attribute__ ((__gnu_inline__))
 # else
 #  define _GL_INLINE extern inline
-#endif
+# endif
 # define _GL_EXTERN_INLINE extern
 # define _GL_EXTERN_INLINE_IN_USE
 #else
@@ -1100,7 +1100,7 @@
 # else
 #  define _GL_INLINE_HEADER_CONST_PRAGMA \
      _Pragma ("GCC diagnostic ignored \"-Wsuggest-attribute=const\"")
-#endif
+# endif
 # define _GL_INLINE_HEADER_BEGIN \
     _Pragma ("GCC diagnostic push") \
     _Pragma ("GCC diagnostic ignored \"-Wmissing-prototypes\"") \
@@ -1119,7 +1119,7 @@
 /* Work around a bug in Apple GCC 4.0.1 build 5465: In C99 mode, it supports
    the ISO C 99 semantics of 'extern inline' (unlike the GNU C semantics of
    earlier versions), but does not display it by setting __GNUC_STDC_INLINE__.
-   __APPLE__ && __MACH__ test for MacOS X.
+   __APPLE__ && __MACH__ test for Mac OS X.
    __APPLE_CC__ tests for the Apple compiler and its version.
    __STDC_VERSION__ tests for the C99 mode.  */
 #if defined __APPLE__ && defined __MACH__ && __APPLE_CC__ >= 5465 && !defined __cplusplus && __STDC_VERSION__ >= 199901L && !defined __GNUC_STDC_INLINE__

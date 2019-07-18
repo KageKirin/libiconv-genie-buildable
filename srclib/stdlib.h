@@ -1133,7 +1133,7 @@ _GL_WARN_ON_USE (realloc, "realloc is not POSIX compliant everywhere - "
 #endif
 
 #if 1
-# if 1
+# if 0
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define realpath rpl_realpath
 #  endif

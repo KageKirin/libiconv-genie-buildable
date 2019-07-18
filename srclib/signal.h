@@ -450,7 +450,7 @@ typedef unsigned int sigset_t;
 #endif
 
 /* Define sighandler_t, the type of signal handlers.  A GNU extension.  */
-#if !0
+#if !1
 # ifdef __cplusplus
 extern "C" {
 # endif

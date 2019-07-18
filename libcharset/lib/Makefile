@@ -65,7 +65,7 @@ relocatable.lo : $(srcdir)/relocatable.c $(srcdir)/relocatable.h
 	$(LIBTOOL_COMPILE) $(CC) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(DEFS) -c $(srcdir)/relocatable.c
 
 charset.alias: $(srcdir)/config.charset
-	$(SHELL) $(srcdir)/config.charset 'x86_64-apple-darwin18.2.0' > t-$@
+	$(SHELL) $(srcdir)/config.charset 'x86_64-pc-linux-gnu' > t-$@
 	mv t-$@ $@
 
 ref-add.sed : $(srcdir)/ref-add.sin
@@ -96,7 +96,7 @@ install-lib : all force
 
 install : all force
 	if test no = no; then \
-	  case 'darwin18.2.0' in \
+	  case 'linux-gnu' in \
 	    darwin[56]*) \
 	      need_charset_alias=true ;; \
 	    darwin* | cygwin* | mingw* | pw32* | cegcc*) \
